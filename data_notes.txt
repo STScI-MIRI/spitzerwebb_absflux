@@ -1,0 +1,4 @@
+more IRAC data for:
+HD165456 (lots)
+1802271 (a bunch)
+HD209458 (lots, and MIPS/IRS too)
