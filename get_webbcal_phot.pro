@@ -83,9 +83,9 @@ printf,unit2,'#'
 printf,unit2,'#name, filter, xpos, ypos, flux[mJy], unc[mJy], total sky[mJy], total sky unc[mJy] '
 
 ; get Spitzer data
-;n_names = 1
-;for k = 0,(n_names-1) do begin
-for k = (n_names-2),(n_names-1) do begin
+n_names = 1
+for k = 0,(n_names-1) do begin
+;for k = (n_names-2),(n_names-1) do begin
 ;for k = 5,5 do begin
     print,'working on ' + names[k]
     indxs = where(names[k] EQ cor_name,n_indxs)
@@ -129,7 +129,7 @@ for k = (n_names-2),(n_names-1) do begin
 
             ; now get the photometry from the individual images
             indxs = where(xnames EQ names[k],n_indxs)
-            if (n_indxs GE 0) then begin 
+            if (n_indxs GE 0) then begin
                 chn_num = fix(strmid(files[i],ch_pos+2,1)) - 1
                 ifiles = file_search('IRAC/'+xid[chn_num,indxs[0]]+'/ch'+strmid(files[i],ch_pos+2,1) + $
                                      '/bcd/*_bcd.fits',count=n_ifiles)
@@ -175,7 +175,7 @@ for k = (n_names-2),(n_names-1) do begin
                 endfor
             endif
         endfor
-        
+
     endif
 
     ; see if there is IRS data
