@@ -131,7 +131,7 @@ for k = 0,(n_names-1) do begin
             indxs = where(xnames EQ names[k],n_indxs)
             if (n_indxs GE 0) then begin
                 chn_num = fix(strmid(files[i],ch_pos+2,1)) - 1
-                ifiles = file_search('IRAC/'+names[k]+'/'+xid[chn_num,indxs[0]]+'/ch'+strmid(files[i],ch_pos+2,1) + $
+                ifiles = file_search('IRAC/data/'+names[k]+'/'+xid[chn_num,indxs[0]]+'/ch'+strmid(files[i],ch_pos+2,1) + $
                                      '/bcd/*_bcd.fits',count=n_ifiles)
             endif else n_ifiles = 0
 
