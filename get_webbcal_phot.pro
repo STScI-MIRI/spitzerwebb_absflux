@@ -71,14 +71,14 @@ cor_name = strlowcase(cor_name)
 
 openw,unit1,'webbcal_spitzer_phot'+ext_file_str+'.dat',/get_lun
 printf,unit1,'#Spitzer photometry of Webb calibration stars'
-printf,unit1,'#Karl Gordon, get_webbcal_phot.pro, 12 June 2009'
+printf,unit1,'#Karl Gordon, get_webbcal_phot.pro, 18 June 2021'
 printf,unit1,'#'
 printf,unit1,'#name, filter, xpos, ypos, flux[mJy], unc[mJy], total sky[mJy], total sky unc[mJy]'
 
 openw,unit2,'webbcal_spitzer_indiv_phot'+ext_file_str+'.dat',/get_lun
 printf,unit2,'#Spitzer photometry of Webb calibration stars'
 printf,unit2,'#Derived from individual BCD images'
-printf,unit2,'#Karl Gordon, get_webbcal_phot.pro, 12 June 2009'
+printf,unit2,'#Karl Gordon, get_webbcal_phot.pro, 18 June 2021'
 printf,unit2,'#'
 printf,unit2,'#name, filter, xpos, ypos, flux[mJy], unc[mJy], total sky[mJy], total sky unc[mJy] '
 
