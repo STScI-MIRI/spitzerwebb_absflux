@@ -39,11 +39,14 @@ endif else begin
 ;    irac_ap_rad = 5.
 ;    irac_ap_sky = [10.,20.]
 ;    ext_file_str = '_irac_rad5_sky10_20'
-    irac_ap_rad = 3.
-    irac_ap_sky = [10.,20.]
-    ext_file_str = '_irac_rad3_sky10_20'
+;    irac_ap_rad = 3.
+;    irac_ap_sky = [10.,20.]
+;    ext_file_str = '_irac_rad3_sky10_20'
+;    irs_ap_rad = 3.
+;    irs_ap_sky = [10.,20.]
+    ext_file_str = '_irac_rad3_sky3_7'
     irs_ap_rad = 3.
-    irs_ap_sky = [10.,20.]
+    irs_ap_sky = [3.,7.]
 endelse
 
 ; read in IRAC AOR ids
