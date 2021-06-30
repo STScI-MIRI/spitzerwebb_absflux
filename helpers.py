@@ -8,6 +8,7 @@ from astropy import wcs
 from astropy.io import fits
 from astropy.nddata import Cutout2D
 from astropy.visualization import simple_norm
+from astropy.stats import sigma_clip
 
 
 def get_aper_flux(image, aperture, annulus_aperture, center_pix, chn_num):
@@ -44,7 +45,8 @@ def get_aper_flux(image, aperture, annulus_aperture, center_pix, chn_num):
     annulus_data = annulus_mask.multiply(image)
     mask = annulus_mask.data
     annulus_data_1d = annulus_data[mask > 0]
-    med_bkg = np.nanmedian(annulus_data_1d)
+    # med_bkg = np.nanmedian(annulus_data_1d)
+    med_bkg = np.mean(sigma_clip(annulus_data_1d, sigma=3, maxiters=5))
     bkg = med_bkg * aperture.area
 
     ix_ref = center_pix[0]
