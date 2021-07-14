@@ -4,11 +4,60 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 
 from photutils.aperture import CircularAperture, CircularAnnulus
 from photutils.aperture import aperture_photometry
+from photutils.detection import DAOStarFinder
+
 from astropy import wcs
 from astropy.io import fits
 from astropy.nddata import Cutout2D
 from astropy.visualization import simple_norm
 from astropy.stats import sigma_clip
+from astropy.coordinates import SkyCoord
+import astropy.units as u
+
+
+def coords_from_mosaic(sourcecoords, mosfilename, show_image=False):
+    """
+    Determine the current source coordinates using a mosaic and approximate coordinates
+    """
+
+    center = SkyCoord(sourcecoords, unit=(u.hourangle, u.deg))
+    # use the mosaic to refine the source coordinates
+    moshdul = fits.open(mosfilename)
+    mosimage_orig = moshdul[0].data
+    mosw = wcs.WCS(moshdul[0].header)
+    moscenter = mosw.world_to_pixel(center)
+    mc = np.rint(moscenter).astype(int)
+
+    subsize = 40
+    mosimage_cutout = Cutout2D(mosimage_orig, mc, [subsize, subsize], wcs=mosw)
+    mosimage = mosimage_cutout.data
+
+    mean = np.nanmean(mosimage)
+    std = np.nanstd(mosimage)
+    daofind = DAOStarFinder(fwhm=2.0, threshold=5.0 * std)
+    sources = daofind(mosimage - mean)
+
+    # original position
+    center_pix = center.to_pixel(mosimage_cutout.wcs)
+    sindx = 0
+    new_center_pix = [sources["xcentroid"][sindx], sources["ycentroid"][sindx]]
+    new_center = mosimage_cutout.wcs.pixel_to_world(
+        new_center_pix[0], new_center_pix[1]
+    )
+
+    if show_image:
+        aprad = 3
+        norm = simple_norm(mosimage_cutout.data, "sqrt", percent=99)
+        plt.imshow(mosimage_cutout.data, norm=norm, interpolation="nearest")
+
+        aperture = CircularAperture(center_pix, r=aprad)
+        aperture.plot(
+            color="white", lw=2, linestyle="dashed", label="Photometry aperture"
+        )
+        new_aperture = CircularAperture(new_center_pix, r=aprad)
+        new_aperture.plot(color="magenta", lw=2, label="Photometry aperture")
+
+    return new_center
 
 
 def get_aper_flux(image, aperture, annulus_aperture, center_pix, chn_num):
