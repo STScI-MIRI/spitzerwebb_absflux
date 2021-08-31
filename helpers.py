@@ -60,7 +60,9 @@ def coords_from_mosaic(sourcecoords, mosfilename, show_image=False):
     return new_center
 
 
-def get_aper_flux(image, aperture, annulus_aperture, center_pix, chn_num):
+def get_aper_flux(
+    image, aperture, annulus_aperture, center_pix, chn_num, bkg_max_iter=5
+):
 
     # a = np.zeros((6, 4))
     # IRAC pint gain correction coefficients Hora et al. 2008 (PASP)
@@ -95,7 +97,8 @@ def get_aper_flux(image, aperture, annulus_aperture, center_pix, chn_num):
     mask = annulus_mask.data
     annulus_data_1d = annulus_data[mask > 0]
     # med_bkg = np.nanmedian(annulus_data_1d)
-    med_bkg = np.mean(sigma_clip(annulus_data_1d, sigma=3, maxiters=5))
+    annulus_data_1d_sigclip = sigma_clip(annulus_data_1d, sigma=3, maxiters=bkg_max_iter)
+    med_bkg = np.mean(annulus_data_1d_sigclip)
     bkg = med_bkg * aperture.area
 
     ix_ref = center_pix[0]
@@ -142,6 +145,8 @@ def get_aper_flux(image, aperture, annulus_aperture, center_pix, chn_num):
         corfac2,
         med_bkg,
         bkg,
+        len(annulus_data_1d),
+        len(annulus_data_1d_sigclip),
     )
 
 
