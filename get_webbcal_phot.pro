@@ -3,10 +3,10 @@
 ; program to extract the photometry for the Spitzer observations
 ; of the Webb calibrators
 
-pro get_webbcal_phot,save_png=save_png,small_ap=small_ap
+pro get_webbcal_phot,save_png=save_png,small_ap=small_ap,cbcd=cbcd
 
 silent = 1
-find_peak = 1
+find_peak = 0
 
 names = ['g191b2b','gd153','gd71','lds749b','hd209458','p041c','p177d','p330e', $
         'hd165459','1732526','1740346','1802271','1805292','1812095','1743045','snap2a','snap2b']
@@ -39,14 +39,11 @@ endif else begin
 ;    irac_ap_rad = 5.
 ;    irac_ap_sky = [10.,20.]
 ;    ext_file_str = '_irac_rad5_sky10_20'
-;    irac_ap_rad = 3.
-;    irac_ap_sky = [10.,20.]
-;    ext_file_str = '_irac_rad3_sky10_20'
-;    irs_ap_rad = 3.
-;    irs_ap_sky = [10.,20.]
-    ext_file_str = '_irac_rad3_sky3_7'
+    irac_ap_rad = 3.
+    irac_ap_sky = [10.,20.]
+    ext_file_str = '_irac_rad3_sky10_20'
     irs_ap_rad = 3.
-    irs_ap_sky = [3.,7.]
+    irs_ap_sky = [10.,20.]
 endelse
 
 ; read in IRAC AOR ids
@@ -67,6 +64,8 @@ irs_indx = [0,0,0,0,7,6,0,0,0,1,2,3,4,5,0,0] - 1
 ;irac_indx = replicate(-1,n_names)
 ;irs_indx = replicate(-1,n_names)
 
+if keyword_set(cbcd) then fext = "cbcd" else fext = "bcd"
+
 ; get coordinates
 
 readcol,'coordinates.txt',cor_name,ra_str,dec_str,format='(A12,A12,A12)'
@@ -78,7 +77,7 @@ printf,unit1,'#Karl Gordon, get_webbcal_phot.pro, 18 June 2021'
 printf,unit1,'#'
 printf,unit1,'#name, filter, xpos, ypos, flux[mJy], unc[mJy], total sky[mJy], total sky unc[mJy]'
 
-openw,unit2,'webbcal_spitzer_indiv_phot'+ext_file_str+'.dat',/get_lun
+openw,unit2,'webbcal_spitzer_indiv_phot_'+fext+ext_file_str+'.dat',/get_lun
 printf,unit2,'#Spitzer photometry of Webb calibration stars'
 printf,unit2,'#Derived from individual BCD images'
 printf,unit2,'#Karl Gordon, get_webbcal_phot.pro, 18 June 2021'
@@ -135,7 +134,7 @@ for k = 0,(n_names-1) do begin
             if (n_indxs GE 0) then begin
                 chn_num = fix(strmid(files[i],ch_pos+2,1)) - 1
                 ifiles = file_search('IRAC/data/'+names[k]+'/'+xid[chn_num,indxs[0]]+'/ch'+strmid(files[i],ch_pos+2,1) + $
-                                     '/bcd/*_bcd.fits',count=n_ifiles)
+                                     '/bcd/*_'+fext+'.fits',count=n_ifiles)
             endif else n_ifiles = 0
 
             if (n_ifiles GT 0) then begin
